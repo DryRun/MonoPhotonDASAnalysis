@@ -1,0 +1,9 @@
+root://cmseos.fnal.gov//store/user/cmsdas/2018/long_exercises/MonoPhoton/ggNtpls/ADDmonoPhoton_MD-2_d-3/ggtree_mc_1.root
+root://cmseos.fnal.gov//store/user/cmsdas/2018/long_exercises/MonoPhoton/ggNtpls/ADDmonoPhoton_MD-2_d-3/ggtree_mc_2.root
+root://cmseos.fnal.gov//store/user/cmsdas/2018/long_exercises/MonoPhoton/ggNtpls/ADDmonoPhoton_MD-2_d-3/ggtree_mc_3.root
+root://cmseos.fnal.gov//store/user/cmsdas/2018/long_exercises/MonoPhoton/ggNtpls/ADDmonoPhoton_MD-2_d-3/ggtree_mc_4.root
+root://cmseos.fnal.gov//store/user/cmsdas/2018/long_exercises/MonoPhoton/ggNtpls/ADDmonoPhoton_MD-2_d-3/ggtree_mc_5.root
+root://cmseos.fnal.gov//store/user/cmsdas/2018/long_exercises/MonoPhoton/ggNtpls/ADDmonoPhoton_MD-2_d-3/ggtree_mc_6.root
+root://cmseos.fnal.gov//store/user/cmsdas/2018/long_exercises/MonoPhoton/ggNtpls/ADDmonoPhoton_MD-2_d-3/ggtree_mc_7.root
+root://cmseos.fnal.gov//store/user/cmsdas/2018/long_exercises/MonoPhoton/ggNtpls/ADDmonoPhoton_MD-2_d-3/ggtree_mc_8.root
+root://cmseos.fnal.gov//store/user/cmsdas/2018/long_exercises/MonoPhoton/ggNtpls/ADDmonoPhoton_MD-2_d-3/ggtree_mc_9.root
