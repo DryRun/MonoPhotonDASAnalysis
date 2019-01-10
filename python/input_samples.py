@@ -1,26 +1,36 @@
 # Paths to ntuples
+# When run as an executable, globs the list of input files from EOS. This abuses the FUSE mount, so try not to do this...
+# When loaded as a module, provides the paths of input ntuples as a dictionary.
+
+# Nomenclature:
+# - samples = top-level process names, i.e. the processes shown in the legends of the plots.
+# - subsamples = actual MC samples. For GJets, this means the HT-binned samples; for others, it's just the sample name.
+
 import os
 import sys
 from glob import glob
 
-background_samples = ["WGJets", "ZLLGJets", "ZNuNuGJets", "WToENu", "WToMuNu", "WToTauNu", "GJets"]
+background_samples = ["WGJets", "ZLLGJets", "ZNuNuGJets", "WToMuNu", "WToTauNu", "GJets"] # WToENu
 signal_samples = ["ADD1", "ADD2", "ADD3"]
 all_samples = ["data"] + background_samples + signal_samples
 
 # Subsamples: often a given process is split into subsamples, e.g. different data periods, or HT-binned MC
 subsamples = {
-	"data":["Data_2015D_v3_0", "Data_2015D_v4_1", "Data_2015D_v4_0", "Data_2015D_v4_2"],
 	"ADD1":["ADD1"],
 	"ADD2":["ADD2"],
 	"ADD3":["ADD3"],
 	"WGJets":["WGJets"],
 	"ZLLGJets":["ZLLGJets"],
 	"ZNuNuGJets":["ZNuNuGJets"],
-	"WToENu":["WToENu"],
+	#"WToENu":["WToENu"],
 	"WToMuNu":["WToMuNu"],
 	"WToTauNu":["WToTauNu"],
 	"GJets":["GJets_HT-100to200","GJets_HT-200to400","GJets_HT-400to600","GJets_HT-40to100","GJets_HT-600toInf"]
 }
+# Data is split into many subjobs, to facilitate pipelining on condor
+subsamples["data"] = []
+for i in xrange(22):
+	subsamples["data"].append("Data_2015D_subjob{}".format(i))
 
 def get_input_txt(subsample):
 	return os.path.expandvars("$CMSSW_BASE/src/MonoPhoton/DASAnalysis/analysis/inputs/{}.txt".format(subsample))
@@ -35,6 +45,8 @@ for sample in all_samples:
 			with open(input_txt, 'r') as f:
 				for line in f:
 					subsample_files[subsample].append(line.strip())
+
+
 
 if __name__ == "__main__":
 	import argparse

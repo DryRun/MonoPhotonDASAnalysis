@@ -5,7 +5,6 @@
 <use   name="rootxml"/>
 <use   name="roofitcore"/>
 <use   name="CLHEP"/>
-<use   name="MyTools/RootUtils"/>
 <use   name="FWCore/ServiceRegistry"/>
 <use   name="DataFormats/PatCandidates"/>
 <use   name="FWCore/Framework"/>
