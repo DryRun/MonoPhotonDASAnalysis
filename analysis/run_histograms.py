@@ -100,7 +100,6 @@ if __name__ == "__main__":
 				os.system("source {}".format(csub_script_path))
 
 	elif args.combine_outputs:
-		print cross_sections
 		# Add up subsample histograms, and scale to luminosity
 		for sample in samples:
 			sample_file = TFile("{}/histograms_{}.root".format(args.output_dir, sample), "RECREATE")

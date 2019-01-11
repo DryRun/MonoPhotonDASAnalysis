@@ -239,7 +239,7 @@ class MonoPhotonHistogrammer:
         return (self._data.phoHoverE[i] < 0.05) \
             and (self._data.phoSigmaIEtaIEtaFull5x5[i] < 0.0102) \
             and (self._data.phohasPixelSeed[i] == 0) \
-            and self.photon_medium_isolation(i)
+            #and self.photon_medium_isolation(i)
 
     # Photon ID for electron fake denominator (same as nominal, except phohasPixelSeed == 1)
     def photon_id_electrondenominator(self, i):
