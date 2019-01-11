@@ -22,7 +22,10 @@ class MonoPhotonHistogrammer:
     def __init__(self, tree_name="ggNtuplizer/EventTree", is_data=True):
         self._data = TChain(tree_name)
         self._is_data = is_data # True if running over real data, false if running over MC
-        print "[MonoPhotonHistogrammer::__init__] INFO : self._is_data = {}".format(self._is_data)
+        if self._is_data:
+            print "[MonoPhotonHistogrammer::__init__] INFO : Running over DATA."
+        else:
+            print "[MonoPhotonHistogrammer::__init__] INFO : Running over MC."            
 
     ######################
     ### Main functions ###
@@ -117,16 +120,16 @@ class MonoPhotonHistogrammer:
                 self.fill_histograms("sr", i_ph_sr, event_weight=1.)
 
             # Electron fake selection: different photon selection with pixel seed required
-            pass_CR_electronfakes, i_ph_electronfakes = self.pass_selection_CR_electronfakes()
-            if pass_CR_electronfakes:
-                r_electronfakes = 0.0184
-                self.fill_histograms("cr_electronfakes", i_ph_electronfakes, event_weight=r_electronfakes)
+            #pass_CR_electronfakes, i_ph_electronfakes = self.pass_selection_CR_electronfakes()
+            #if pass_CR_electronfakes:
+             #   r_electronfakes = 0.0184
+             #   self.fill_histograms("cr_electronfakes", i_ph_electronfakes, event_weight=r_electronfakes)
 
             # Jet fake selection: different photon selection with very loose && !loose isolation
-            pass_CR_jetfakes, i_ph_jetfakes = self.pass_selection_CR_jetfakes()
-            if pass_CR_jetfakes:
-                r_qcd = 0.079 + 0.00014 * self._data.phoEt[i_ph_jetfakes]
-                self.fill_histograms("cr_jetfakes", i_ph_jetfakes, event_weight=r_qcd)
+            #pass_CR_jetfakes, i_ph_jetfakes = self.pass_selection_CR_jetfakes()
+            #if pass_CR_jetfakes:
+            #   r_qcd = 0.079 + 0.00014 * self._data.phoEt[i_ph_jetfakes]
+            #    self.fill_histograms("cr_jetfakes", i_ph_jetfakes, event_weight=r_qcd)
 
             # Trigger selections, for computing trigger efficiency
             if self.pass_backup_triggers() and self._data.pfMET > 140. and i_ph_sr >= 0:
@@ -211,117 +214,23 @@ class MonoPhotonHistogrammer:
         if i_ph_sr == -1:
             return False, -1
 
-        # Number of loose electrons, for electron veto
-        n_electrons = 0
-        for i in xrange(self._data.nEle):
-            dR_el_ph = math.sqrt((self._data.eleEta[i] - self._data.phoEta[i_ph_sr])**2 + (math.acos(math.cos(self._data.elePhi[i] - self._data.phoPhi[i_ph_sr])))**2)
-            if self.electron_id_loose(i) and self._data.elePt[i] > 10. and dR_el_ph > 0.5:
-                n_electrons += 1
-
-        # Number of loose muons, for muon veto
-        n_muons = 0
-        for i in xrange(self._data.nMu):
-            dR_mu_ph = math.sqrt((self._data.muEta[i] - self._data.phoEta[i_ph_sr])**2 + (math.acos(math.cos(self._data.muPhi[i] - self._data.phoPhi[i_ph_sr])))**2)
-            if self.muon_id_loose(i) and self._data.muPt[i] > 10. and dR_mu_ph > 0.5:
-                n_muons += 1
-
-        # Require MET away from leading 4 jets
-        pass_dphi_jet_MET = True
-        for i in xrange(min(4, self._data.nJet)):
-            if math.acos(math.cos(self._data.jetPhi[i] - self._data.pfMETPhi)) < 0.5:
-                pass_dphi_jet_MET = False
-                break
-
         return (
             self.pass_signal_triggers()
             and (self._data.metFilters == 0)
             and (self._data.phoEt[i_ph_sr] > 175.)
-            and (self._data.pfMET > 170.)
-            and math.acos(math.cos(self._data.phoPhi[i_ph_sr] - self._data.pfMETPhi)) > 2.
-            and n_electrons == 0
-            and n_muons == 0
-            and pass_dphi_jet_MET
         ), i_ph_sr
 
     def pass_selection_CR_electronfakes(self):
-        i_ph_electronfakes = -1
-        for i in xrange(self._data.nPho):
-            if abs(self._data.phoSCEta[i]) < 1.4442 and self.photon_id_electrondenominator(i):
-                i_ph_electronfakes = i
-        if i_ph_electronfakes == -1:
-            return False, -1
+        # Construct this CR from code similar to pass_selection_SR(). 
+        # For the photon selection, use self.photon_id_electrondenominator() instead of photon_id(). 
 
-        # Number of loose electrons, for electron veto
-        n_electrons = 0
-        for i in xrange(self._data.nEle):
-            dR_el_ph = math.sqrt((self._data.eleEta[i] - self._data.phoEta[i_ph_electronfakes])**2 + (math.acos(math.cos(self._data.elePhi[i] - self._data.phoPhi[i_ph_electronfakes])))**2)
-            if self.electron_id_loose(i) and self._data.elePt[i] > 10. and dR_el_ph > 0.5:
-                n_electrons += 1
-
-        # Number of loose muons, for muon veto
-        n_muons = 0
-        for i in xrange(self._data.nMu):
-            dR_mu_ph = math.sqrt((self._data.muEta[i] - self._data.phoEta[i_ph_electronfakes])**2 + (math.acos(math.cos(self._data.muPhi[i] - self._data.phoPhi[i_ph_electronfakes])))**2)
-            if self.muon_id_loose(i) and self._data.muPt[i] > 10. and dR_mu_ph > 0.5:
-                n_muons += 1
-
-        # Require MET away from leading 4 jets
-        pass_dphi_jet_MET = True
-        for i in xrange(min(4, self._data.nJet)):
-            if math.acos(math.cos(self._data.jetPhi[i] - self._data.pfMETPhi)) < 0.5:
-                pass_dphi_jet_MET = False
-                break
-
-        return (
-            self.pass_signal_triggers()
-            and (self._data.metFilters == 0)
-            and (self._data.phoEt[i_ph_electronfakes] > 175.)
-            and (self._data.pfMET > 170.)
-            and math.acos(math.cos(self._data.phoPhi[i_ph_electronfakes] - self._data.pfMETPhi)) > 2.
-            and n_electrons == 0
-            and n_muons == 0
-            and pass_dphi_jet_MET
-        ), i_ph_electronfakes
+        return False, -1
 
     def pass_selection_CR_jetfakes(self):
-        i_ph_jetfakes = -1
-        for i in xrange(self._data.nPho):
-            if abs(self._data.phoSCEta[i]) < 1.4442 and self.photon_id_qcddenominator(i):
-                i_ph_jetfakes = i
-        if i_ph_jetfakes == -1:
-            return False, -1
+        # Construct this CR from code similar to pass_selection_SR(). 
+        # For the photon selection, use self.photon_id_qcddenominator() instead of photon_id(). 
 
-        # Number of loose electrons, for electron veto
-        n_electrons = 0
-        for i in xrange(self._data.nEle):
-            dR_el_ph = math.sqrt((self._data.eleEta[i] - self._data.phoEta[i_ph_jetfakes])**2 + (math.acos(math.cos(self._data.elePhi[i] - self._data.phoPhi[i_ph_jetfakes])))**2)
-            if self.electron_id_loose(i) and self._data.elePt[i] > 10. and dR_el_ph > 0.5:
-                n_electrons += 1
-
-        # Number of loose muons, for muon veto
-        n_muons = 0
-        for i in xrange(self._data.nMu):
-            dR_mu_ph = math.sqrt((self._data.muEta[i] - self._data.phoEta[i_ph_jetfakes])**2 + (math.acos(math.cos(self._data.muPhi[i] - self._data.phoPhi[i_ph_jetfakes])))**2)
-            if self.muon_id_loose(i) and self._data.muPt[i] > 10. and dR_mu_ph > 0.5:
-                n_muons += 1
-
-        # Require MET away from leading 4 jets
-        pass_dphi_jet_MET = True
-        for i in xrange(min(4, self._data.nJet)):
-            if math.acos(math.cos(self._data.jetPhi[i] - self._data.pfMETPhi)) < 0.5:
-                pass_dphi_jet_MET = False
-                break
-
-        return (
-            self.pass_signal_triggers()
-            and (self._data.metFilters == 0)
-            and (self._data.phoEt[i_ph_jetfakes] > 175.)
-            and (self._data.pfMET > 170.)
-            and math.acos(math.cos(self._data.phoPhi[i_ph_jetfakes] - self._data.pfMETPhi)) > 2.
-            and n_electrons == 0
-            and n_muons == 0
-            and pass_dphi_jet_MET
-        ), i_ph_jetfakes
+        return False, -1
 
     # Photon ID
     # Corresponds to "SPRING15 selection 25ns" / barrel / medium WP
