@@ -228,7 +228,7 @@ class MonoPhotonHistogrammer:
         # Require MET away from leading 4 jets
         pass_dphi_jet_MET = True
         for i in xrange(min(4, self._data.nJet)):
-            if math.acos(math.cos(self._data.jetPhi[i] - self._data.pfMETPhi)) < 0.5:
+            if math.acos(math.cos(self._data.jetPhi[i] - self._data.pfMETPhi)) < 0.5 and self._data.jetPt[i] > 30.:
                 pass_dphi_jet_MET = False
                 break
 
@@ -268,7 +268,7 @@ class MonoPhotonHistogrammer:
         # Require MET away from leading 4 jets
         pass_dphi_jet_MET = True
         for i in xrange(min(4, self._data.nJet)):
-            if math.acos(math.cos(self._data.jetPhi[i] - self._data.pfMETPhi)) < 0.5:
+            if math.acos(math.cos(self._data.jetPhi[i] - self._data.pfMETPhi)) < 0.5 and self._data.jetPt[i] > 30.:
                 pass_dphi_jet_MET = False
                 break
 
@@ -308,7 +308,7 @@ class MonoPhotonHistogrammer:
         # Require MET away from leading 4 jets
         pass_dphi_jet_MET = True
         for i in xrange(min(4, self._data.nJet)):
-            if math.acos(math.cos(self._data.jetPhi[i] - self._data.pfMETPhi)) < 0.5:
+            if math.acos(math.cos(self._data.jetPhi[i] - self._data.pfMETPhi)) < 0.5 and self._data.jetPt[i] > 30.:
                 pass_dphi_jet_MET = False
                 break
 
