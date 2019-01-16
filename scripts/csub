@@ -14,6 +14,7 @@ timestamp = str(time.time()).replace(".","_")
 #####################
 cmssw_version = os.path.expandvars("$CMSSW_VERSION")
 tarball_directory = os.path.expandvars("$HOME/nobackup/tarballs")
+os.system("mkdir -pv {}".format(tarball_directory))
 username = os.path.basename(os.path.expandvars("$HOME"))
 tarball_eosdir = "root://cmseos.fnal.gov//store/user/{}/tarballs".format(username)
 tarball_name = "tarball_{}".format(cmssw_version)
