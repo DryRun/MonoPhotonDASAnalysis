@@ -231,8 +231,8 @@ class MonoPhotonHistogrammer:
         # Require MET away from leading 4 jets
         pass_dphi_jet_MET = True
         for i in xrange(min(4, self._data.nJet)):
-            if math.acos(math.cos(self._data.jetPhi[i] - self._data.pfMETPhi)) < 0.5:
-                if self._data.jetPt[i] > 30.:
+            if (math.acos(math.cos(self._data.jetPhi[i] - self._data.pfMETPhi)) < 0.5)
+                and (self._data.jetPt[i] > 30.):
                     pass_dphi_jet_MET = False
                     break
 
@@ -240,11 +240,11 @@ class MonoPhotonHistogrammer:
             self.pass_signal_triggers()
             and (self._data.metFilters == 0)
             and (self._data.phoEt[i_ph_sr] > 175.)
-            and (self._data.pfMET > 170.)
-            and math.acos(math.cos(self._data.phoPhi[i_ph_sr] - self._data.pfMETPhi)) > 2.
-            and n_electrons == 0
-            and n_muons == 0
-            and pass_dphi_jet_MET
+            #and (self._data.pfMET > 170.)
+            #and math.acos(math.cos(self._data.phoPhi[i_ph_sr] - self._data.pfMETPhi)) > 2.
+            #and n_electrons == 0
+            #and n_muons == 0
+            #and pass_dphi_jet_MET
         ), i_ph_sr
 
     def pass_selection_CR_electronfakes(self):
@@ -266,7 +266,7 @@ class MonoPhotonHistogrammer:
         return (self._data.phoHoverE[i] < 0.05) \
             and (self._data.phoSigmaIEtaIEtaFull5x5[i] < 0.0102) \
             and (self._data.phohasPixelSeed[i] == 0) \
-            and self.photon_medium_isolation(i)
+            #and self.photon_medium_isolation(i)
 
     # Photon ID for electron fake denominator (same as nominal, except phohasPixelSeed == 1)
     def photon_id_electrondenominator(self, i):
